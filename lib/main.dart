@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'screens/duties_screen.dart';
-import 'screens/roster_screen.dart';
-import 'screens/poll_screen.dart';
 import 'constants.dart';
+import 'components/home.dart';
 
 void main() => runApp(MyApp());
 
@@ -19,12 +17,7 @@ class MyApp extends StatelessWidget {
         accentColor: Colors.deepOrange,
         scaffoldBackgroundColor: kDutyScaffoldColor,
       ),
-      routes: {
-        Duties.id: (context) => Duties(),
-        Roster.id: (context) => Roster(),
-        Poll.id: (context) => Poll(),
-      },
-      initialRoute: Duties.id,
+      home: HomeWidget(),
     );
   }
 }
