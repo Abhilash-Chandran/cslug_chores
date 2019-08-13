@@ -12,7 +12,11 @@ class HomeWidget extends StatefulWidget {
 class _HomeWidgetState extends State<HomeWidget> {
   int _selectedIndex = 0;
 
-  static List<Widget> _screenWidgets = <Widget>[Duties(), Roster(), Poll()];
+  static List<Widget> _screenWidgets = <Widget>[
+    Duties(),
+    Roster(),
+    Poll(),
+  ];
 
   @override
   Widget build(BuildContext context) {

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'constants.dart';
 import 'components/home.dart';
+import 'package:provider/provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 void main() => runApp(MyApp());
 
@@ -10,14 +12,20 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: _title,
-      theme: ThemeData.dark().copyWith(
-        primaryColor: Colors.blueGrey,
-        accentColor: Colors.deepOrange,
-        scaffoldBackgroundColor: kDutyScaffoldColor,
+    return MultiProvider(
+      providers: [
+        StreamProvider<FirebaseUser>.value(
+            value: FirebaseAuth.instance.onAuthStateChanged)
+      ],
+      child: MaterialApp(
+        title: _title,
+        theme: ThemeData.dark().copyWith(
+          primaryColor: Colors.blueGrey,
+          accentColor: Colors.deepOrange,
+          scaffoldBackgroundColor: kDutyScaffoldColor,
+        ),
+        home: HomeWidget(),
       ),
-      home: HomeWidget(),
     );
   }
 }

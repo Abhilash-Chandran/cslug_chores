@@ -18,6 +18,7 @@ class Duties extends StatelessWidget {
                   child: DutyCard(
                     assetName: 'assets/Vessels.flr',
                     animationName: 'organize',
+                    dutycardNumber: 1,
                   ),
                 ),
                 SizedBox(
@@ -27,6 +28,7 @@ class Duties extends StatelessWidget {
                   child: DutyCard(
                     assetName: 'assets/Washing_Machine.flr',
                     animationName: 'wash',
+                    dutycardNumber: 2,
                   ),
                 ),
               ],
@@ -42,6 +44,7 @@ class Duties extends StatelessWidget {
                   child: DutyCard(
                     assetName: 'assets/Vessels.flr',
                     animationName: 'organize',
+                    dutycardNumber: 3,
                   ),
                 ),
                 SizedBox(
@@ -51,6 +54,7 @@ class Duties extends StatelessWidget {
                   child: DutyCard(
                     assetName: 'assets/Waste_Basket.flr',
                     animationName: 'Move_TrashCan',
+                    dutycardNumber: 4,
                   ),
                 ),
               ],
