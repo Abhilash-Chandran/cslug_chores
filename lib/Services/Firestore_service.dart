@@ -1,20 +1,28 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cslug_chores/Models/Duty.dart';
 
-final Firestore _db = Firestore.instance;
-String rootCollection = "cslug_chores";
+class FirestoreService {
+  final Firestore _db = Firestore.instance;
 
-Stream<Duty> streamDuties() {
-  return _db
-      .collection(rootCollection)
-      .document("Duties")
-      .snapshots()
-      .map((snapshot) => Duty.fromSnapshot(snapshot));
-}
+  Stream<List<Duty>> streamDuties() {
+    return _db
+        .collection("Duties")
+        .snapshots()
+        .map((QuerySnapshot snapshot) => snapshot.documents)
+        .map((List<DocumentSnapshot> docsnapshots) {
+      List<Duty> duties = [];
+      docsnapshots.forEach(
+        (docsnapshot) => duties.add(Duty.fromSnapshot(docsnapshot)),
+      );
+      return duties;
+    });
+  }
 
-Stream<Duty> streamDutyItems(CollectionReference reference, String dutyId) {
-  return reference
-      .document(dutyId)
-      .snapshots()
-      .map((snapshot) => Duty.fromSnapshot(snapshot));
+  Stream<DutyItems> streamDutyItems(String dutyId) {
+    return _db
+        .collection("Duties")
+        .document(dutyId)
+        .snapshots()
+        .map((snapshot) => DutyItems.fromSnapshot(snapshot));
+  }
 }

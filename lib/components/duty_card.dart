@@ -3,71 +3,72 @@ import 'round_icon_button.dart';
 import 'package:cslug_chores/constants.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'duties_list.dart';
+import 'package:provider/provider.dart';
+import 'package:cslug_chores/Models/Duty.dart';
+import 'package:cslug_chores/Services/Firestore_service.dart';
 
 class DutyCard extends StatelessWidget {
+  final String dutyName;
   final String assetName;
   final String animationName;
   final int dutycardNumber;
+  final db = FirestoreService();
 
-  DutyCard({this.assetName, this.animationName, this.dutycardNumber});
+  DutyCard(
+      {this.dutyName, this.assetName, this.animationName, this.dutycardNumber});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      //constraints: BoxConstraints(minHeight: 150.0),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(25.0),
         //shape: BoxShape.circle,
         color: kDutyCardColor,
       ),
-      height: 250.0,
-      width: 100.0,
-      //alignment: Alignment(0.95, 0.90),
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Center(
-              child: Text(
-                'Organize',
-                style: TextStyle(
-                  color: Colors.black54,
-                  fontWeight: FontWeight.w900,
-                ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Center(
+            child: Text(
+              dutyName,
+              style: TextStyle(
+                color: Colors.black54,
+                fontWeight: FontWeight.w900,
               ),
             ),
-            Center(
-              child: Container(
-                height: 150.0,
-                width: 200.0,
-                child: FlareActor(
-                  assetName,
-                  animation: animationName,
-                  fit: BoxFit.contain,
-                  alignment: Alignment.center,
-                ),
-              ),
+          ),
+          Container(
+            height: 160.0,
+            width: 200.0,
+            child: FlareActor(
+              assetName,
+              animation: animationName,
+              fit: BoxFit.contain,
+              alignment: Alignment.center,
             ),
-            Hero(
-              tag: "DutyNavigator" + this.dutycardNumber.toString(),
-              child: RoundIconButton(
-                icon: Icons.keyboard_arrow_right,
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) {
-                      return DutyList(
-                        dutyName: 'Organize',
-                      );
-                    }),
-                  );
-                },
-                buttonColor: kDutyCardColor,
-              ),
+          ),
+          Hero(
+            tag: "DutyNavigator" + this.dutycardNumber.toString(),
+            child: RoundIconButton(
+              icon: Icons.keyboard_arrow_right,
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) {
+                    return StreamProvider<DutyItems>.value(
+                      value: db.streamDutyItems(dutyName),
+                      initialData: DutyItems.fromMap({'display_text': []}),
+                      child: DutyList(
+                        cardNumber: dutycardNumber,
+                      ),
+                    );
+                  }),
+                );
+              },
+              buttonColor: kDutyCardColor,
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

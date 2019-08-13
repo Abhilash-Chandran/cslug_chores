@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'round_icon_button.dart';
 import '../constants.dart';
+import 'package:cslug_chores/Models/Duty.dart';
+import 'package:provider/provider.dart';
 
 class DutyList extends StatefulWidget {
-  final String dutyName;
-
-  DutyList({this.dutyName});
-
+  final int cardNumber;
+  DutyList({this.cardNumber});
   @override
   _DutyListState createState() => _DutyListState();
 }
@@ -19,35 +19,25 @@ class _DutyListState extends State<DutyList> {
 
   @override
   Widget build(BuildContext context) {
+    DutyItems dutyItems = Provider.of<DutyItems>(context);
     return Scaffold(
       body: Column(
         children: <Widget>[
-          StreamBuilder<QuerySnapshot>(
-            stream: Firestore.instance.collection('Duties').snapshots(),
-            builder:
-                (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-              if (snapshot.hasError)
-                return new Text('Error: ${snapshot.error}');
-              switch (snapshot.connectionState) {
-                case ConnectionState.waiting:
-                  return Center(child: new Text('Loading...'));
-                default:
-                  return Expanded(
-                    child: ListView(
-                      children: snapshot.data.documents
-                          .where((DocumentSnapshot document) =>
-                              document['duty_name'] == this.widget.dutyName)
-                          .map(
-                        (DocumentSnapshot document) {
-                          return new ListTile(
-                            subtitle: new Text(document['display_text']),
-                          );
-                        },
-                      ).toList(),
+          Expanded(
+            child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: dutyItems.duties.length,
+                itemBuilder: (BuildContext context, int indx) {
+                  return Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Card(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(dutyItems.duties[indx]),
+                      ),
                     ),
                   );
-              }
-            },
+                }),
           ),
           createNewRule
               ? Row(
@@ -92,7 +82,7 @@ class _DutyListState extends State<DutyList> {
                 buttonColor: kDutyCardColor,
               ),
               Hero(
-                tag: "DutyNavigator1",
+                tag: "DutyNavigator" + widget.cardNumber.toString(),
                 child: RoundIconButton(
                   icon: Icons.keyboard_arrow_left,
                   onPressed: () {
