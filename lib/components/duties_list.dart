@@ -35,40 +35,48 @@ class _DutyListState extends State<DutyList> {
                     padding: EdgeInsets.all(8.0),
                     child: Card(
                       child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(dutyItems.duties[indx]),
+                        padding: const EdgeInsets.all(12.0),
+                        child: Text(
+                          dutyItems.duties[indx],
+                          style: TextStyle(fontSize: 20.0),
+                        ),
                       ),
                     ),
                   );
                 }),
           ),
           createNewRule
-              ? Row(
-                  children: <Widget>[
-                    Expanded(
-                      child: TextField(
-                        decoration: InputDecoration(
-                          border: UnderlineInputBorder(
-                            borderRadius: BorderRadius.circular(10.0),
+              ? Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Row(
+                    children: <Widget>[
+                      Flexible(
+                        child: TextField(
+                          keyboardType: TextInputType.multiline,
+                          maxLines: null,
+                          decoration: InputDecoration(
+                            hintText: "Enter a new task.",
+                            border: UnderlineInputBorder(
+                              borderRadius: BorderRadius.circular(1.0),
+                            ),
                           ),
+                          onChanged: (value) {
+                            newRuleText = value;
+                          },
                         ),
-                        onChanged: (value) {
-                          newRuleText = value;
-                        },
                       ),
-                    ),
-                    RoundIconButton(
-                      icon: Icons.send,
-                      onPressed: () {
-                        db.createDutyItem(duty, newRuleText);
-                        setState(() {
-                          createNewRule = false;
-                        });
-                      },
-                      buttonColor: kDutyCardColor,
-                    )
-                  ],
-                )
+                      RoundIconButton(
+                        icon: Icons.send,
+                        onPressed: () {
+                          db.createDutyItem(duty, newRuleText);
+                          setState(() {
+                            createNewRule = false;
+                          });
+                        },
+                        buttonColor: kDutyCardColor,
+                      )
+                    ],
+                  ))
               : Container(),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
