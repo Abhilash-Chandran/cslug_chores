@@ -12,10 +12,15 @@ class DutyCard extends StatelessWidget {
   final String assetName;
   final String animationName;
   final int dutycardNumber;
+  final Duty duty;
   final db = FirestoreService();
 
   DutyCard(
-      {this.dutyName, this.assetName, this.animationName, this.dutycardNumber});
+      {this.dutyName,
+      this.assetName,
+      this.animationName,
+      this.dutycardNumber,
+      this.duty});
 
   @override
   Widget build(BuildContext context) {
@@ -58,8 +63,11 @@ class DutyCard extends StatelessWidget {
                     return StreamProvider<DutyItems>.value(
                       value: db.streamDutyItems(dutyName),
                       initialData: DutyItems.fromMap({'display_text': []}),
-                      child: DutyList(
-                        cardNumber: dutycardNumber,
+                      child: Provider<Duty>.value(
+                        value: duty,
+                        child: DutyList(
+                          cardNumber: dutycardNumber,
+                        ),
                       ),
                     );
                   }),

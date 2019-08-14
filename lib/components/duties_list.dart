@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'round_icon_button.dart';
 import '../constants.dart';
 import 'package:cslug_chores/Models/Duty.dart';
 import 'package:provider/provider.dart';
+import 'package:cslug_chores/Services/Firestore_service.dart';
+
+FirestoreService db = FirestoreService();
 
 class DutyList extends StatefulWidget {
   final int cardNumber;
@@ -20,6 +22,7 @@ class _DutyListState extends State<DutyList> {
   @override
   Widget build(BuildContext context) {
     DutyItems dutyItems = Provider.of<DutyItems>(context);
+    Duty duty = Provider.of<Duty>(context);
     return Scaffold(
       body: Column(
         children: <Widget>[
@@ -57,9 +60,9 @@ class _DutyListState extends State<DutyList> {
                     RoundIconButton(
                       icon: Icons.send,
                       onPressed: () {
-                        Firestore.instance.collection("Duties").add({
-                          "duty_name": "Organize",
-                          "display_text": newRuleText
+                        db.createDutyItem(duty, newRuleText);
+                        setState(() {
+                          createNewRule = false;
                         });
                       },
                       buttonColor: kDutyCardColor,
@@ -73,13 +76,13 @@ class _DutyListState extends State<DutyList> {
               RoundIconButton(
                 icon: Icons.add,
                 onPressed: createNewRule
-                    ? () {} // disables the add button.
+                    ? null // disables the add button.
                     : () {
                         setState(() {
                           createNewRule = true;
                         });
                       },
-                buttonColor: kDutyCardColor,
+                buttonColor: createNewRule ? Colors.white10 : kDutyCardColor,
               ),
               Hero(
                 tag: "DutyNavigator" + widget.cardNumber.toString(),

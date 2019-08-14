@@ -5,17 +5,10 @@ class FirestoreService {
   final Firestore _db = Firestore.instance;
 
   Stream<List<Duty>> streamDuties() {
-    return _db
-        .collection("Duties")
-        .snapshots()
-        .map((QuerySnapshot snapshot) => snapshot.documents)
-        .map((List<DocumentSnapshot> docsnapshots) {
-      List<Duty> duties = [];
-      docsnapshots.forEach(
-        (docsnapshot) => duties.add(Duty.fromSnapshot(docsnapshot)),
-      );
-      return duties;
-    });
+    return _db.collection("Duties").snapshots().map((QuerySnapshot snapshot) =>
+        snapshot.documents
+            .map((DocumentSnapshot doc) => Duty.fromSnapshot(doc))
+            .toList());
   }
 
   Stream<DutyItems> streamDutyItems(String dutyId) {
@@ -24,5 +17,15 @@ class FirestoreService {
         .document(dutyId)
         .snapshots()
         .map((snapshot) => DutyItems.fromSnapshot(snapshot));
+  }
+
+  Future<void> createDutyItem(Duty dutyObj, String dutyItemText) {
+    return _db.runTransaction((transaction) async {
+      final freshSnap = await transaction.get(dutyObj.reference);
+
+      await transaction.update(freshSnap.reference, {
+        "display_text": FieldValue.arrayUnion([dutyItemText])
+      });
+    });
   }
 }

@@ -32,6 +32,7 @@ class Duties extends StatelessWidget {
                       assetName: 'assets/${duty.assetName}.flr',
                       animationName: duty.animationName,
                       dutycardNumber: index,
+                      duty: duty,
                     ),
                   );
                 }).toList()),
